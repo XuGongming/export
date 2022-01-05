@@ -1,8 +1,8 @@
-package com.example.demo.hello;
+package com.example.demo.demo;
 
-import com.example.demo.hello.dto.User;
-import com.example.demo.hello.dto.UserVO;
-import com.example.demo.hello.service.UserService;
+import com.example.demo.demo.dto.User;
+import com.example.demo.demo.dto.UserVO;
+import com.example.demo.demo.service.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;

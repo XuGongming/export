@@ -1,7 +1,7 @@
-package com.example.demo.hello.service;
+package com.example.demo.demo.service;
 
-import com.example.demo.hello.dto.User;
-import com.example.demo.hello.dto.UserVO;
+import com.example.demo.demo.dto.User;
+import com.example.demo.demo.dto.UserVO;
 
 import java.util.List;
 

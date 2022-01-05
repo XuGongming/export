@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.hello.mapper.UserMapper">
-    <select id="findAll" resultType="com.example.demo.hello.dto.UserVO">
+<mapper namespace="com.example.demo.demo.mapper.UserMapper">
+    <select id="findAll" resultType="com.example.demo.demo.dto.UserVO">
         SELECT * FROM sys_t_user
     </select>
 
-    <update id="updateUserName" parameterType="com.example.demo.hello.dto.User">
+    <update id="updateUserName" parameterType="com.example.demo.demo.dto.User">
         update sys_t_user set nick_name=#{nickName},utime=now() where id=#{id}
     </update>
 
-    <insert id="insertUser" parameterType="com.example.demo.hello.dto.User">
+    <insert id="insertUser" parameterType="com.example.demo.demo.dto.User">
         insert into sys_t_user (nick_name,login_name,sex,mobile,cuser_id,uuser_id,ctime,utime)values
         (#{nickName},#{loginName},#{sex},#{mobile},#{cuserId},#{uuserId},now(),now())
     </insert>
+
+    <select id="getByIdForExportDetail" parameterType="java.lang.Long" resultType="com.example.demo.demo.dto.UserVO">
+        SELECT * FROM sys_t_user where id=#{id}
+    </select>
 </mapper>

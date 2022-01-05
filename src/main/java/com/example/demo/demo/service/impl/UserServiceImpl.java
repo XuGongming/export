@@ -1,9 +1,9 @@
-package com.example.demo.hello.service.impl;
+package com.example.demo.demo.service.impl;
 
-import com.example.demo.hello.dto.User;
-import com.example.demo.hello.dto.UserVO;
-import com.example.demo.hello.mapper.UserMapper;
-import com.example.demo.hello.service.UserService;
+import com.example.demo.demo.dto.User;
+import com.example.demo.demo.dto.UserVO;
+import com.example.demo.demo.mapper.UserMapper;
+import com.example.demo.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

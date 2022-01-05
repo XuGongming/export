@@ -1,7 +1,7 @@
 /*
  *  Copyright@2019 清云智通（北京）科技有限公司 保留所有权利
  */
-package com.example.demo.hello.util;
+package com.example.demo.demo.util;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
