@@ -9,5 +9,9 @@ import java.util.Map;
 @Component
 @Mapper
 public interface ShardPageMapper{
+
     <T> List<T> queryForListShardingPage(Map<String, Object> paramMap);
+
+
+    Integer queryForListShardingCount(Map<String, Object> paramMap);
 }

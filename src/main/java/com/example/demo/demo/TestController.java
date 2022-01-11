@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author xugm
@@ -25,9 +26,16 @@ public class TestController {
     @Resource
     private TestShardPageMapper testShardPageMapper;
 
-    @GetMapping("/test/shard")
-    public Response<PageResponse<TestVO>> queryByPrimaryKey(TestQuery query) {
+    @GetMapping("/test/shard/page")
+    public Response<PageResponse<TestVO>> queryShardingPage(TestQuery query) {
         PageResponse<TestVO> page = shardPageUtil.queryForListShardingPage(testShardPageMapper, BeanUtil.objectToMap(query), 10);
+        return Response.ok(page);
+
+    }
+
+    @GetMapping("/test/shard/list")
+    public Response<List<TestVO>> queryShardingList(TestQuery query) {
+        List<TestVO> page = shardPageUtil.queryForListSharding(testShardPageMapper, BeanUtil.objectToMap(query), 10);
         return Response.ok(page);
 
     }

@@ -9,4 +9,8 @@ import lombok.Data;
 @Data
 public class TestQuery  {
     private String orgCode;
+
+    private String page;
+
+    private String pageSize;
 }

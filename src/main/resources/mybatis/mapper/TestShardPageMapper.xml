@@ -6,5 +6,18 @@
     <if test="orgCode != null">
       and org_code=${orgCode}
     </if>
+    <if test="minRow != null" >
+      <if test="fetchNum != -1" >
+        limit ${minRow},${fetchNum}
+      </if>
+    </if>
   </select>
+
+  <select id="queryForListShardingCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    SELECT count(1) FROM shard_test_${tableFix} where 1=1
+    <if test="orgCode != null">
+      and org_code=${orgCode}
+    </if>
+  </select>
+
 </mapper>
