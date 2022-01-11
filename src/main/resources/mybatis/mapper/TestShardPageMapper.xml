@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.demo.mapper.TestShardPageMapper">
+  <select id="queryForListShardingPage" parameterType="java.util.HashMap" resultType="com.example.demo.demo.dto.TestVO">
+    SELECT id,name,org_code orgCode FROM shard_test_${tableFix} where 1=1
+    <if test="orgCode != null">
+      and org_code=${orgCode}
+    </if>
+  </select>
+</mapper>

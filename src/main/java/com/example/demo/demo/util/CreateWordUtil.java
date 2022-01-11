@@ -34,23 +34,6 @@ public class CreateWordUtil {
             List<Field> fieldList = Arrays.asList(infoFields).stream().filter(e ->
                     Objects.nonNull(e.getAnnotation(ExportField.class))).collect(Collectors.toList());
 
-//            XWPFParagraph paragraph = document.createParagraph();
-//            paragraph.setAlignment(ParagraphAlignment.BOTH);
-//            XWPFRun run = paragraph.createRun();
-//            run.setTextPosition(35);
-//            int j = 0;
-//            for (Field field : fieldList) {
-//
-//                field.setAccessible(true);
-//                run.setText(field.getAnnotation(ExportField.class).fieldName() + ":" + field.get(info).toString());
-//                j++;
-//                if (j == 2) {
-//                    run.addCarriageReturn();
-//                    run = paragraph.createRun();
-//                    run.setTextPosition(35);
-//                }
-//
-//            }
             //工作经历表格
             XWPFTable infoTable = document.createTable();
             //去表格边框
