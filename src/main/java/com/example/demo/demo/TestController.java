@@ -3,13 +3,13 @@ package com.example.demo.demo;
 
 import com.example.demo.demo.common.PageResponse;
 import com.example.demo.demo.common.Response;
+import com.example.demo.demo.dto.TestInsertDTO;
 import com.example.demo.demo.dto.TestVO;
 import com.example.demo.demo.mapper.TestShardPageMapper;
 import com.example.demo.demo.query.TestQuery;
 import com.example.demo.demo.util.BeanUtil;
 import com.example.demo.demo.util.ShardPageUtil;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -36,6 +36,13 @@ public class TestController {
     @GetMapping("/test/shard/list")
     public Response<List<TestVO>> queryShardingList(TestQuery query) {
         List<TestVO> page = shardPageUtil.queryForListSharding(testShardPageMapper, BeanUtil.objectToMap(query), 10);
+        return Response.ok(page);
+
+    }
+
+    @PostMapping("/test/shard/insert")
+    public Response<Integer> insertShardingList(@RequestBody List<TestInsertDTO> list){
+        Integer page = shardPageUtil.batchInsertSharding(testShardPageMapper, list, 10);
         return Response.ok(page);
 
     }

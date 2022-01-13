@@ -14,4 +14,6 @@ public interface ShardPageMapper{
 
 
     Integer queryForListShardingCount(Map<String, Object> paramMap);
+
+    Integer batchInsertSharding(Map<String, Object> param);
 }

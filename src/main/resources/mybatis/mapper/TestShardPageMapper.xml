@@ -19,5 +19,13 @@
       and org_code=${orgCode}
     </if>
   </select>
-
+  <insert id="batchInsertSharding" parameterType="map">
+    insert into shard_test_${tableFix}
+    (name,org_code,cuser_id,ctime,uuser_id,utime)
+    values
+    <foreach collection="insertList" item="item" separator=",">
+      (#{item.name},#{item.orgCode},'1001',now(),'1001',now()
+      )
+    </foreach>
+  </insert>
 </mapper>

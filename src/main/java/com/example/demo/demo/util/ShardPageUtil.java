@@ -1,14 +1,19 @@
 package com.example.demo.demo.util;
 
 import com.example.demo.demo.common.PageResponse;
+import com.example.demo.demo.dto.InsertDTO;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xugm
@@ -20,7 +25,10 @@ public class ShardPageUtil {
     private static final String PAGE = "page";
     public static final String MAP_KEY_MIN_ROW = "minRow";
     public static final String MAP_KEY_FETCH_NUM = "fetchNum";
-
+    @Resource
+    private RedisTemplate redisTemplate;
+    @Resource
+    private TransactionTemplate transactionTemplate ;
     public <T> PageResponse<T> queryForListShardingPage(ShardPageMapper mapper, Map<String, Object> paramMap, int libNo) {
         ExecutorService executorService = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().availableProcessors() * 2, 60L, TimeUnit.SECONDS,
                 new LinkedBlockingDeque<>(), Executors.defaultThreadFactory());
@@ -100,7 +108,7 @@ public class ShardPageUtil {
             cs.submit(executor.queryForListCount(mapper, query));
         }
         es.shutdown();
-        for (int tableFix = 0; tableFix < libNo; tableFix++) {
+        for (int tableFix = 0; tableFix < shardingQryCounter.getShardingDbNum(); tableFix++) {
             Future<Map<String, Object>> future = null;
             try {
                 future = cs.take();
@@ -116,4 +124,48 @@ public class ShardPageUtil {
         shardingQryCounter.setTotalNum(sum);
         return shardingQryCounter;
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public int batchInsertSharding(ShardPageMapper mapper, List<? extends InsertDTO> insertList, int libNo) {
+        ExecutorService es = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().availableProcessors() * 2, 60L, TimeUnit.SECONDS,
+                new LinkedBlockingDeque<>(), Executors.defaultThreadFactory());
+        CompletionService<Integer> cs = new ExecutorCompletionService<>(es);
+        int batchNum = 0;
+        int tableNum = 0;
+        String uuid = UUID.randomUUID().toString();
+        List<Map<String, Object>> paramList = new ArrayList<>();
+        for (int i = 0; i < libNo; i++) {
+            Map<String, Object> param = new HashMap<>();
+            param.put("uuid", uuid);
+            param.put("tableFix", i);
+            final int j = i;
+            List list = insertList.stream().filter(e -> Integer.parseInt(e.getOrgCode().substring(e.getOrgCode().length() - 1)) % libNo == j)
+                    .collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(list)) {
+                continue;
+            }
+            tableNum++;
+            param.put("insertList", list);
+            paramList.add(param);
+        }
+        for (Map<String, Object> param : paramList) {
+            param.put("tableNum", paramList.size());
+            ShardingQryExecutor executor = new ShardingQryExecutor(redisTemplate,transactionTemplate);
+            cs.submit(executor.batchInsertShardingTx(mapper, param));
+        }
+        es.shutdown();
+        for (int tableFix = 0; tableFix < tableNum; tableFix++) {
+            Future<Integer> future = null;
+            try {
+                future = cs.take();
+                batchNum += future.get();
+            } catch (Exception e) {
+                throw new RuntimeException(ExceptionUtils.getFullStackTrace(e));
+            }
+
+        }
+        return batchNum;
+    }
+
+
 }
